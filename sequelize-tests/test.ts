@@ -1,4 +1,4 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize, DataTypes  } = require('sequelize');
 const { Client } = require('pg');
 import { default as config } from '../config.json';
 
@@ -32,7 +32,10 @@ const testConnection = async () => {
 const main = async () => {
     await createDatabase();
     await testConnection();
+    await Light.sync({ force: true}); // Drop table if exists
+    const light = await Light.create({ isOn: false });
 }
+
 const sequelize = new Sequelize(
     config.dbname,
     config.username,
@@ -41,6 +44,19 @@ const sequelize = new Sequelize(
         host: config.host,
         port: config.port,
         dialect: config.wrapper
+    }
+);
+
+const Light = sequelize.define('Toggles',
+    {
+        // Model attributes are defined here
+        isOn: {
+            type: DataTypes.BOOLEAN
+            // allowNull defaults to true
+        }
+    },
+    {
+        // Other model options go here
     }
 );
 
