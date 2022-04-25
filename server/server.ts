@@ -1,4 +1,5 @@
 const express = require('express');
+import { routes } from './routes';
 
 const app = express();
 
@@ -14,10 +15,8 @@ app.use((req: any, res: any, next: any) => {
     }
 })
 
-app.get('/', (req: any, res: any) => {
-    let response = { message: 'hello world' };
-    res.send([response]);
-})
+app.use(express.json());
+app.use('/', routes);
 
 let port = 4201;
 let host = '127.0.0.1';
