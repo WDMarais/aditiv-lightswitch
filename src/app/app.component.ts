@@ -10,8 +10,10 @@ export class AppComponent {
   title = 'aditiv-lights';
   isOn = false;
   static path = 'http://localhost:4201';
-  messages = this.http.get<any[]>(AppComponent.path);
-  constructor(private http: HttpClient) {}
+  messages;
+  constructor(private http: HttpClient) {
+    this.messages = this.http.get<any[]>(AppComponent.path);
+  }
 
   post() {
     let user = { username: 'WDM', pw: 'letmein' };
