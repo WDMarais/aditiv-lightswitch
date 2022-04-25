@@ -168,8 +168,8 @@
     </button>
   </div>
 
-  <ol>
-    <li *ngFor="let message of messages | async">
+  <ol *ngIf="messages$ | async as messages">
+    <li *ngFor="let message of messages">
       {{ message.message }}
     </li>
   </ol>

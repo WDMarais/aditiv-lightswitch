@@ -1,5 +1,6 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
+import { map } from 'rxjs/operators';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -10,9 +11,10 @@ export class AppComponent {
   title = 'aditiv-lights';
   isOn = false;
   static path = 'http://localhost:4201';
-  messages;
+  static lightMessagePath = `${AppComponent.path}/light-message`;
+  messages$;
   constructor(private http: HttpClient) {
-    this.messages = this.http.get<any[]>(AppComponent.path);
+    this.messages$ = this.http.get<any[]>(AppComponent.lightMessagePath);
   }
 
   post() {
@@ -22,5 +24,9 @@ export class AppComponent {
 
   toggleLight() {
     this.isOn = !this.isOn;
+    let message = this.http.get<any>(AppComponent.lightMessagePath);
+    this.messages$ = this.messages$.pipe(map(data => {
+      return [...data, message];
+    }))
   }
 }
