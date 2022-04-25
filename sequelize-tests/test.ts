@@ -1,5 +1,23 @@
 const { Sequelize } = require('sequelize');
+const { Client } = require('pg');
 import { default as config } from '../config.json';
+
+const createDatabase = async () => {
+    const client = new Client({
+        user: config.username,
+        password: config.password,
+        host: config.host,
+        port: config.port,
+        database: config.wrapper
+    });
+
+    client.connect();
+    const create = `CREATE DATABASE "${config.dbname}"`;
+    client.query(create, (err: any, res: any) => {
+        console.log(err, res);
+        client.end();
+    })
+}
 
 const testConnection = async () => {
     try {
@@ -11,6 +29,10 @@ const testConnection = async () => {
     }
 }
 
+const main = async () => {
+    await createDatabase();
+    await testConnection();
+}
 const sequelize = new Sequelize(
     config.dbname,
     config.username,
@@ -21,4 +43,5 @@ const sequelize = new Sequelize(
         dialect: config.wrapper
     }
 );
-testConnection();
+
+main();
