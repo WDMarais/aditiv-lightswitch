@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-
+import { HttpClient } from '@angular/common/http'
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -7,4 +7,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'aditiv-lights';
+
+  static path = 'http://localhost:4201';
+  messages = this.http.get<any[]>(AppComponent.path);
+  constructor(private http: HttpClient) {}
 }

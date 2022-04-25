@@ -14,9 +14,10 @@ app.use((req: any, res: any, next: any) => {
     }
 })
 
+
 app.get('/', (req: any, res: any) => {
-    let response = { hello: 'world' };
-    res.send(response);
+    let response = { message: 'hello world' };
+    res.send([response]);
 })
 
 let port = 4201;
