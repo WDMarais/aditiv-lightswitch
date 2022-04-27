@@ -4,5 +4,8 @@
     "password": "<password>",
     "host": "localhost",
     "port": 5433,
-    "dbname": "aditiv-light"
+    "dbname": "aditiv-light",
+    "pg_channel": "toggle_light",
+    "socket_host": "localhost",
+    "socket_port": 9000
 }
