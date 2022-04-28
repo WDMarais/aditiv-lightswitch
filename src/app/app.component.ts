@@ -1,6 +1,5 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { HttpClient } from '@angular/common/http'
-import { map } from 'rxjs/operators';
+import { LightToggleService } from './light-toggle.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -12,21 +11,26 @@ export class AppComponent {
   isOn = false;
   static path = 'http://localhost:4201';
   static lightMessagePath = `${AppComponent.path}/light-message`;
-  messages$;
-  constructor(private http: HttpClient) {
-    this.messages$ = this.http.get<any[]>(AppComponent.lightMessagePath);
+  messageList: string[] = [];
+  constructor(private lightToggleService: LightToggleService) {
+
   }
 
-  post() {
-    let user = { username: 'WDM', pw: 'letmein' };
-    this.http.post(`${AppComponent.path}/users`, user).subscribe(next => console.log(next));
+  ngOnInit(){
+    this.lightToggleService.getNewMessage().subscribe((message: string) => {
+      this.messageList.push(message);
+      console.log(this.messageList);
+    })
+  }
+
+  sendRandomMessage() {
+    const messages= ["Hello", "Hi", "Hola"];
+    const index = Math.floor(Math.random() * messages.length);
+    const message = messages[index];
+    this.lightToggleService.sendMessage(message);
   }
 
   toggleLight() {
     this.isOn = !this.isOn;
-    let message = this.http.get<any>(AppComponent.lightMessagePath);
-    this.messages$ = this.messages$.pipe(map(data => {
-      return [...data, message];
-    }))
   }
 }
