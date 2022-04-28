@@ -42,8 +42,12 @@ io.on('connection', (socket: any) => {
     console.log('a user connected');
 
     socket.on('message', (message: any) => {
-      console.log(message);
-      io.emit('message', `${socket.id.substr(0, 2)} said ${message}`);
+        console.log(message);
+        io.emit('message', `${socket.id.substr(0, 2)} said ${message}`);
+    });
+
+    socket.on('light-toggle', (message: any) => {
+        io.emit('light-toggle', message);
     });
 
     socket.on('disconnect', () => {
@@ -52,6 +56,7 @@ io.on('connection', (socket: any) => {
 
     socket.on('ready for data', (data: any) => {
         pg_client.on('notification', (title: any) => {
+            console.log("RECEIVED TOGGLES");
             socket.emit('update', { message: title });
         });
     });

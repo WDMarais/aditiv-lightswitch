@@ -29,11 +29,30 @@ const testConnection = async () => {
     }
 }
 
+const LIGHT_FUNCTION = `
+CREATE OR REPLACE FUNCTION notify_light_toggle() RETURNS trigger
+    LANGUAGE plpgsql
+
+AS $$
+    BEGIN
+        PERFORM pg_notify('${config.pg_channel}'::text, NEW."isOn"::text);
+        RETURN NULL;
+    END;
+$$;
+`
+
+const LIGHT_TRIGGER = `
+CREATE OR REPLACE TRIGGER light_trigger AFTER INSERT ON "${config.table_name}"
+FOR EACH ROW EXECUTE PROCEDURE notify_light_toggle();
+`
+
 const main = async () => {
     await createDatabase();
     await testConnection();
     await Light.sync({ force: true}); // Drop table if exists
-    const light = await Light.create({ isOn: false });
+    await sequelize.query(LIGHT_FUNCTION);
+    await sequelize.query(LIGHT_TRIGGER);
+    await Light.create({ isOn: false });
 }
 
 const sequelize = new Sequelize(
@@ -47,7 +66,7 @@ const sequelize = new Sequelize(
     }
 );
 
-const Light = sequelize.define('Toggles',
+const Light = sequelize.define(config.table_name,
     {
         // Model attributes are defined here
         isOn: {
@@ -57,6 +76,7 @@ const Light = sequelize.define('Toggles',
     },
     {
         // Other model options go here
+        freezeTableName: true
     }
 );
 

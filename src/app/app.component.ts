@@ -21,6 +21,11 @@ export class AppComponent {
       this.messageList.push(message);
       console.log(this.messageList);
     })
+
+    this.lightToggleService.getNewLightToggle().subscribe((message: string) => {
+      console.log(message);
+      this.isOn = message == "ON" ? true : false;
+    });
   }
 
   sendRandomMessage() {
@@ -31,6 +36,9 @@ export class AppComponent {
   }
 
   toggleLight() {
-    this.isOn = !this.isOn;
+    let state = this.isOn ? "ON" : "OFF";
+    let notState = this.isOn? "OFF": "ON";
+    console.log(`Setting from ${state} to ${notState}`)
+    this.lightToggleService.sendLightToggle(notState);
   }
 }
