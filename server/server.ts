@@ -38,6 +38,11 @@ const pg_client = new Client({
 pg_client.connect();
 pg_client.query(`LISTEN ${config.pg_channel}`); // No variable necessary just yet
 
+pg_client.on('notification', (msg: any) => {
+    console.log(msg.channel) // foo
+    console.log(msg.payload) // bar!
+});
+
 io.on('connection', (socket: any) => {
     console.log('a user connected');
 
